@@ -68,7 +68,6 @@ struct Patient* findPatient(int id)
     {
         if(temp->patientId == id)
             return temp;
-
         temp = temp->link;
     }
     return NULL;
@@ -81,7 +80,6 @@ struct Doctor* findDoctor(int id)
     {
         if(temp->doctorId == id)
             return temp;
-
         temp = temp->link;
     }
     return NULL;
@@ -115,16 +113,12 @@ void patientRegistration()
     fgets(temp->symptoms,50,stdin);
     temp->link = NULL;
     if(root == NULL)
-    {
         root = temp;
-    }
     else
     {
         struct Patient *p = root;
-
         while(p->link != NULL)
             p = p->link;
-
         p->link = temp;
     }
     printf("Patient with Patient id %d has been registered\n",temp->patientId);
@@ -171,7 +165,6 @@ void doctorRegistration()
         struct Doctor *p = head;
         while(p->link != NULL)
             p = p->link;
-
         p->link = temp;
     }
     printf("Doctor with Doctor id %d has been registered\n",temp->doctorId);
@@ -224,7 +217,6 @@ void doctorDisplay()
             printf("Doctor is available\n");
         else
             printf("Doctor is not available\n");
-
         printf("Doctor's Available Timings : %s",temp->availableTimings);
         count++;
         temp = temp->link;
@@ -260,7 +252,6 @@ void doctorSearch()
     struct Doctor *temp = findDoctor(id);
     if(temp == NULL)
         printf("Doctor is not found\n");
-    
     else
     {
         printf("\nDoctor is present\n");
