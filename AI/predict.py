@@ -58,7 +58,10 @@ try:
     print(int(priority))
 except ValueError as e:
     print("Error:", e)
+    sys.exit(1)
 except FileNotFoundError as e:
     print("Error:", e)
+    sys.exit(1)
 except Exception as e:
     print("Prediction error:", e)
+    sys.exit(1)

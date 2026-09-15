@@ -390,37 +390,30 @@ int predictPriority(struct Patient *p)
     int chestPain = strstr(p->symptoms, "chest pain") != NULL;
     int breathingProblem = strstr(p->symptoms, "breathing") != NULL;
     int bleeding = strstr(p->symptoms, "bleeding") != NULL;
+    int fever = strstr(p->symptoms, "fever") != NULL;
     int highFever = strstr(p->symptoms, "high fever") != NULL;
     int severePain = strstr(p->symptoms, "severe pain") != NULL;
+
     char command[500];
     sprintf(command,
-            "python AI\\predict.py %d %d %d %d %d %d > AI\\result.txt",
-            chestPain,
-            breathingProblem,
-            bleeding,
-            highFever,
-            severePain,
-            p->age);
-    int result = system(command);
-    if(result != 0)
+        "python AI\\predict.py %d %d %d %d %d %d %d",
+        chestPain, breathingProblem, bleeding, fever, highFever, severePain, p->age);
+
+    FILE *pipe = _popen(command, "r");
+    if(pipe == NULL)
     {
-        printf("AI prediction failed\n");
+        printf("AI prediction failed to start\n");
         return 1;
     }
-    FILE *fp = fopen("AI\\result.txt", "r");
-    if(fp == NULL)
-    {
-        printf("Could not open AI result\n");
-        return 1;
-    }
+
     int priority;
-    if(fscanf(fp, "%d", &priority) != 1)
+    if(fscanf(pipe, "%d", &priority) != 1)
     {
         printf("Could not read AI priority\n");
-        fclose(fp);
+        _pclose(pipe);
         return 1;
     }
-    fclose(fp);
+    _pclose(pipe);
     return priority;
 }
 
