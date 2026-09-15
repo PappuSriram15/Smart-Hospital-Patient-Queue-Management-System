@@ -392,9 +392,7 @@ int predictPriority(struct Patient *p)
     int bleeding = strstr(p->symptoms, "bleeding") != NULL;
     int highFever = strstr(p->symptoms, "high fever") != NULL;
     int severePain = strstr(p->symptoms, "severe pain") != NULL;
-
     char command[500];
-
     sprintf(command,
             "python AI\\predict.py %d %d %d %d %d %d > AI\\result.txt",
             chestPain,
@@ -403,34 +401,26 @@ int predictPriority(struct Patient *p)
             highFever,
             severePain,
             p->age);
-
     int result = system(command);
-
     if(result != 0)
     {
         printf("AI prediction failed\n");
         return 1;
     }
-
     FILE *fp = fopen("AI\\result.txt", "r");
-
     if(fp == NULL)
     {
         printf("Could not open AI result\n");
         return 1;
     }
-
     int priority;
-
     if(fscanf(fp, "%d", &priority) != 1)
     {
         printf("Could not read AI priority\n");
         fclose(fp);
         return 1;
     }
-
     fclose(fp);
-
     return priority;
 }
 
