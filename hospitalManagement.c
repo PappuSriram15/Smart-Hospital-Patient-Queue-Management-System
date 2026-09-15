@@ -385,36 +385,53 @@ void displayAppointments()
     }
 }
 
-int assignPriority(char symptoms[])
+int predictPriority(struct Patient *p)
 {
-    if(strstr(symptoms,"heart") != NULL ||
-       strstr(symptoms,"chest pain") != NULL ||
-       strstr(symptoms,"unconscious") != NULL ||
-       strstr(symptoms,"breathing") != NULL)
+    int chestPain = strstr(p->symptoms, "chest pain") != NULL;
+    int breathingProblem = strstr(p->symptoms, "breathing") != NULL;
+    int bleeding = strstr(p->symptoms, "bleeding") != NULL;
+    int highFever = strstr(p->symptoms, "high fever") != NULL;
+    int severePain = strstr(p->symptoms, "severe pain") != NULL;
+
+    char command[500];
+
+    sprintf(command,
+            "python AI\\predict.py %d %d %d %d %d %d > AI\\result.txt",
+            chestPain,
+            breathingProblem,
+            bleeding,
+            highFever,
+            severePain,
+            p->age);
+
+    int result = system(command);
+
+    if(result != 0)
     {
-        return 5;
-    }
-    else if(strstr(symptoms,"bleeding") != NULL ||
-            strstr(symptoms,"stroke") != NULL ||
-            strstr(symptoms,"fracture") != NULL)
-    {
-        return 4;
-    }
-    else if(strstr(symptoms,"high fever") != NULL ||
-            strstr(symptoms,"severe pain") != NULL ||
-            strstr(symptoms,"vomiting") != NULL)
-    {
-        return 3;
-    }
-    else if(strstr(symptoms,"fever") != NULL ||
-            strstr(symptoms,"injury") != NULL)
-    {
-        return 2;
-    }
-    else
-    {
+        printf("AI prediction failed\n");
         return 1;
     }
+
+    FILE *fp = fopen("AI\\result.txt", "r");
+
+    if(fp == NULL)
+    {
+        printf("Could not open AI result\n");
+        return 1;
+    }
+
+    int priority;
+
+    if(fscanf(fp, "%d", &priority) != 1)
+    {
+        printf("Could not read AI priority\n");
+        fclose(fp);
+        return 1;
+    }
+
+    fclose(fp);
+
+    return priority;
 }
 
 void enqueueEmergency()
@@ -431,7 +448,7 @@ void enqueueEmergency()
     struct Emergency *temp;
     temp = (struct Emergency *)malloc(sizeof(struct Emergency));
     temp->patientId = p->patientId;
-    temp->priority = assignPriority(p->symptoms);
+    temp->priority = predictPriority(p);
     temp->link = NULL;
     if(front == NULL)
     {
