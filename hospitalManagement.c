@@ -130,7 +130,6 @@ void patientRegistration()
     printf("Patient with Patient id %d has been registered\n",temp->patientId);
 }
 
-
 void doctorRegistration()
 {
     struct Doctor *temp;
@@ -379,7 +378,6 @@ void dequeueAppointment()
     addPatientHistory(id);
 }
 
-
 void displayAppointments()
 {
     struct Appointment *temp = f;
@@ -540,7 +538,6 @@ void displayPatientHistory()
 int main()
 {
     int ch;
-
     do
     {
         printf("\n====== SMART HOSPITAL MANAGEMENT SYSTEM ======\n");
@@ -606,7 +603,6 @@ int main()
             default:
                 printf("Invalid Choice\n");
         }
-
     } while(ch != 14);
     return 0;
 }
